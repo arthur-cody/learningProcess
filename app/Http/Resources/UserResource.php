@@ -12,7 +12,18 @@ class UserResource extends JsonResource
             'username' => $this->name,
             'bio' => $this->bio,
             "image" => $this->image,
-            "following" => $this->following
+            'following' => $this->isFollowedByAuthUser()
+        ];
+    }
+
+    public static function getUser($request)
+    {
+        return [
+            'email' => $request->email,
+            'bio' => $request->bio,
+            "username" => $request->name,
+            "token" => $request->token,
+            "image" => $request->image ? $request->image : null
         ];
     }
 }

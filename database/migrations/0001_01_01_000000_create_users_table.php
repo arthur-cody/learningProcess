@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('bio');
             $table->string('image')->nullable();
-            $table->boolean('following')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

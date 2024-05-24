@@ -23,15 +23,15 @@ class UpdateArticleRequest extends FormRequest
     {
 
         return [
-            'title' => 'required|string|max:255',
-            'slug' => 'required|string|unique:articles,slug',
-            'description' => 'required|string',
-            'body' => 'required|string',
+            'article.title' => 'required|string|max:255',
+            // 'slug' => 'required|string|unique:articles,slug',
+            // 'description' => 'required|string',
+            // 'body' => 'required|string',
             // 'user_id'=>'required|string',
-            'tagList' => 'nullable|array',
-            'tagList.*' => 'string',
-            'favorited' => 'boolean',
-            'favoritesCount' => 'integer'
+            // 'tagList' => 'nullable|array',
+            // 'tagList.*' => 'string',
+            // 'favorited' => 'boolean',
+            // 'favoritesCount' => 'integer'
         ];
     }
 }

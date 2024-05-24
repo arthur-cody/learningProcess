@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Tags;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,12 +19,12 @@ class ArticleResource extends JsonResource
         return [
             'title' => $this->title,
             'slug' => $this->slug,
-            'author' => UserResource::make($this->users),
+            'author' => UserResource::make($this->author),
             'description' => $this->description,
             'body' => $this->body,
-            'tagList' => json_decode($this->tagList, true),
-            'favorited' => $this->favorited,    
-            'favoritesCount' => $this->favoritesCount,
+            'tagList' => TagResource::getArray($this->tags),
+            'favorited' => $this->favorites()->where('user_id', auth()->id())->first() !== null,    
+            'favoritesCount' => $this->favorites()->count(),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\{
-    ArticleRequest,
+    StoreArticleRequest,
     UpdateArticleRequest
 };
 use Illuminate\Http\Request;
@@ -22,6 +22,7 @@ class ArticlesController extends Controller
     {
         $this->articleService = $articleService;
     }
+    
     public function index(): JsonResponse
     {
         try {
@@ -39,7 +40,7 @@ class ArticlesController extends Controller
     public function update(UpdateArticleRequest $request, Article $article):JsonResponse
     {
         try {
-             $this->articleService->updateArticle($article, (array)$request->validated());
+             $this->articleService->updateArticle($article, $request->validated());
              return response()->json([
                 'message' => "Article Updated Successfully!"
             ]);
@@ -71,7 +72,7 @@ class ArticlesController extends Controller
        }
     }
 
-    public function store(ArticleRequest $request):JsonResponse
+    public function store(StoreArticleRequest $request):JsonResponse
     {
        try {
             $createdArticle = $this->articleService->createArticle($request->validated());

@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Article;
+use App\Models\ArticleTag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -18,21 +19,26 @@ class ArticleService extends ServiceProvider
 
     public function createArticle(array $data)
     {
-        return Article::create([
+        $articleCreated = Article::create([
             'title' => $data['article']['title'],
             'users_id' => Auth::user()->id,
             'slug' => Str::slug($data['article']['title']),
+            'tag_id' => null,
             'description' => $data['article']['description'],
             'body' => $data['article']['body'],
-            'tagList' => $data['article']['tagList']
+            
         ]);
+        return $articleCreated;
         
         // Logic to create an article
     }
 
     public function updateArticle(Article $article, array $data)
     {
-        $article->update($data);
+        $article->where('slug',$article->slug)->update([
+            'title' => $data['article']['title'],
+            'slug' => Str::slug($data['article']['title'])
+        ]);
         return $article;
         
     }
@@ -51,4 +57,5 @@ class ArticleService extends ServiceProvider
     {
         return Article::all();
     }
+    
 }

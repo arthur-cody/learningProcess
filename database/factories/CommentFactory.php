@@ -30,7 +30,7 @@ class CommentFactory extends Factory
     {
         return [
             'users_id' => User::inRandomOrder()->first()->id,
-            'slug' => Article::inRandomOrder()->first()->slug,
+            'articleSlug' => Article::inRandomOrder()->first()->slug,
             'body' => $this->faker->paragraph,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),

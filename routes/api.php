@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::prefix('articles')->group(function () {
+    Route::get('/', [ArticlesController::class, 'index']);
+
+    Route::prefix("{article:slug}")
+        ->group(function(){
+            Route::post('/',[ArticlesController::class,'show']);
+    });
+});
 
 Route::prefix('api')->middleware(['auth:sanctum'])->group(function () {
 
@@ -25,7 +33,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function () {
         // Article Slug
         Route::prefix("{article:slug}")
             ->group(function(){
-                Route::post('/',[ArticlesController::class,'show']);
+                // Route::post('/',[ArticlesController::class,'show']);
                 Route::put('/', [ArticlesController::class, 'update']);
                 Route::delete('/', [ArticlesController::class, 'delete']);
 

@@ -15,9 +15,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->text('body');
-            $table->unsignedBigInteger('tag_id');
             $table->boolean('favorited')->default(false);
-            // $table->integer('favoritesCount')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

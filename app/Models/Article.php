@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Article extends Model
 {
@@ -24,9 +25,6 @@ class Article extends Model
         "slug",
         "description",
         "body",
-        "tag_id",
-        "favorited",
-        "favoritesCount",
     ];
 
     protected $cast = [
@@ -54,6 +52,11 @@ class Article extends Model
     public function tags():BelongsToMany
     {
         return $this->belongsToMany(Tags::class, 'article_tags', 'article_id', 'tag_id');
+    }
+
+    public function authorFavorited()
+    {
+        return $this->belongsToMany(User::class, 'article_favorite', 'article_id', 'user_id');
     }
 
     public function favorites():BelongsToMany

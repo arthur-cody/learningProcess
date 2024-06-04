@@ -15,13 +15,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('article_id');
-            $table->string('article_slug');
             $table->timestamps();
             $table->softDeletes();
     
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
-            $table->foreign('article_slug')->references('slug')->on('articles')->onDelete('cascade');
         });
     }
 

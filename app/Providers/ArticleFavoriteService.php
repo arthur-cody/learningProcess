@@ -21,8 +21,9 @@ class ArticleFavoriteService extends ServiceProvider
      */
     public function createFavorite($data)
     {
+        $article = Article::where('slug', $data['slug'])->first();
         $existingFavorite = ArticleFavorite::where('user_id', auth()->id())
-        ->where('article_slug', $data['slug'])->where('deleted_at', NULL)
+        ->where('article_id', $article->id)->where('deleted_at', NULL)
         ->first();
 
         if ($existingFavorite) {
@@ -31,10 +32,9 @@ class ArticleFavoriteService extends ServiceProvider
         $favorite =  ArticleFavorite::create([
             'user_id' => auth()->id(),
             'article_id' => $data['id'],
-            'article_slug' => $data['slug']
         ]);
 
-        return $favorite ? Article::where('slug', $favorite->article_slug)->get() : null;
+        return $favorite ? Article::where('id', $article->id)->get() : null;
     }
 
 

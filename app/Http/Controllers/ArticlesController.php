@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\{
+    ListArticleRequest,
     StoreArticleRequest,
     UpdateArticleRequest
 };
@@ -23,13 +24,14 @@ class ArticlesController extends Controller
         $this->articleService = $articleService;
     }
     
-    public function index(): JsonResponse
+    public function index(ListArticleRequest $request): JsonResponse
     {
         try {
-            $articles = $this->articleService->getAllArticles();
+
+            $articles = $this->articleService->getAllArticles($request);
             return response()->json([
                 'articles' => ArticleResource::collection($articles),
-                'articlesCount' => count($articles)
+                'articlesCount' => count($articles) 
             ]);
             
         } catch (\Exception $e) {
@@ -40,12 +42,12 @@ class ArticlesController extends Controller
     public function update(UpdateArticleRequest $request, Article $article):JsonResponse
     {
         try {
-             $this->articleService->updateArticle($article, $request->validated());
-             return response()->json([
-                'message' => "Article Updated Successfully!"
-            ]);
+             $articles = $this->articleService->updateArticle($article, $request->validated());
+                return response()->json([
+                    'article' => ArticleResource::titleOnly($articles),
+                ]);
         }catch (\Exception $e) {
-            return response()->json(['error' => 'Unable to fetch data', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Unable to fetch data', 'message' => $e->getMessage()], 401);
         }
     }
 
@@ -63,10 +65,7 @@ class ArticlesController extends Controller
     public function delete(Article $article):JsonResponse
     {
         try {
-            $this->articleService->deleteArticle($article);
-            return response()->json([
-                'message' => "Article Deleted Successfully!"
-           ]);
+           return $this->articleService->deleteArticle($article);
        }catch (\Exception $e) {
            return response()->json(['error' => 'Unable to fetch data', 'message' => $e->getMessage()], 500);
        }

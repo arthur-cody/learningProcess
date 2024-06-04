@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -16,18 +17,25 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): JsonResponse
     {
-        $request->authenticate();
+        try{
+            $request->authenticate();
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        $user = Auth::user();
-        $token = $user->createToken('email')->plainTextToken;
+            $user = Auth::user();
+            $token = $user->createToken('email')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Logged in successfully',
-            'user' => $user,
-            'token' => $token
-        ]);
+            return response()->json([
+                'message' => 'Logged in successfully',
+                'user' => $user,
+                'token' => $token
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'errors' => $e->errors()
+            ], $e->status);
+        }
     }
 
     /**

@@ -17,8 +17,8 @@ class AuthenticationTest extends TestCase
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
-        // $response->assertNoContent();
+        $this->assertAuthenticated()
+           ->assertNotEmpty($response['token']);
         $response->assertStatus(200);
     }
 
@@ -26,11 +26,25 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->post('/login', [
+        $response = $this->post('/login', [
             'email' => $user->email,
             'password' => 'wrong-password',
         ]);
 
+        $response->assertStatus(422);
+        $this->assertGuest();
+    }
+
+    public function test_users_can_not_authenticate_with_invalid_email(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/login', [
+            'email' => 'wrong-email@gmail.com',
+            'password' => $user->password,
+        ]);
+
+        $response->assertStatus(422);
         $this->assertGuest();
     }
 

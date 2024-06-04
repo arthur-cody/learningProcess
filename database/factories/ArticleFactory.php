@@ -29,9 +29,6 @@ class ArticleFactory extends Factory
             'slug' => $this->faker->unique()->slug,
             'description' => $this->faker->paragraph,
             'body' => $this->faker->paragraphs(3, true),
-            'tag_id' => $this->faker->numberBetween(0, 10),
-            'favorited' => $this->faker->boolean,
-            'favoritesCount' => $this->numberBetween(0, 100),
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];

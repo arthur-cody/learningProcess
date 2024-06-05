@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\ArticleFavorite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleFavoriteService extends ServiceProvider
 {
@@ -41,7 +42,7 @@ class ArticleFavoriteService extends ServiceProvider
     public function unFavorite($data)
     {
         $existingFavorite = ArticleFavorite::where('user_id', auth()->id())
-        ->where('article_slug', $data['slug'])
+        ->where('article_id', $data['id'])
         ->first();
 
         if ($existingFavorite) {

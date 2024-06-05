@@ -36,13 +36,13 @@ class CommentService extends ServiceProvider
     {
         $deleted = Comment::where('article_slug', $article->slug)
         ->where('id', $commentId)
+        ->where('users_id', Auth::user()->id)
         ->delete();
-
 
         if ($deleted) {
             return response()->json(['message' => 'Comment deleted successfully.'], 200);
         } else {
-            return response()->json(['error' => 'Comment not found or does not belong to the specified article.'], 404);
+            return response()->json(['error' => 'Something wrong'], 404);
         }
          $article->delete();
     }

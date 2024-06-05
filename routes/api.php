@@ -19,6 +19,7 @@ Route::prefix('articles')->group(function () {
     Route::prefix("{article:slug}")
         ->group(function(){
             Route::post('/',[ArticlesController::class,'show']);
+            Route::get('/comments', [CommentController::class,'index']);
     });
 });
 
@@ -40,7 +41,6 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function () {
                 // Comments Route
                     Route::prefix('comments')->group(function(){
                         Route::post('/', [CommentController::class,'store']);
-                        Route::get('/', [CommentController::class,'index']);
                         Route::delete('/{id}', [CommentController::class,'destroy']);
                 });
 

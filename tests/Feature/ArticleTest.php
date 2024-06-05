@@ -374,4 +374,39 @@ class ArticleTest extends TestCase
 
     }
 
+    public function test_guest_cannot_add_comment_to_article()
+    {
+        $article = Article::factory()->createOne();
+        $data = [
+                "comment" => [
+                  "body"=> "Comment body for this article"
+                ]
+            ];
+       $response = $this->postJson('/api/articles/'.$article->slug.'/comments', $data)
+            ->assertStatus(401);
+        $this->assertEquals('Unauthenticated.', $response['message']);
+    }
+
+    public function test_user_can_add_comment_to_article()
+    {
+        $articles = Article::factory()->count(5)->create();
+        $article = $articles->first();
+        $data = [
+            "comment" => [
+              "body"=> "Comment body for this article"
+            ]
+        ];
+        
+        $this->actingAs($this->user)
+                ->postJson('/api/articles/'.$article->slug.'/comments', $data)
+                ->assertStatus(200);
+
+        $this->assertDatabaseHas('comments', [
+            'body' => 'Comment body for this article',
+            'users_id' => $this->user->id,
+            'articleSlug' => $article->slug,
+        ]);
+
+    }
+
 }

@@ -31,9 +31,11 @@ class CommentFactory extends Factory
         return [
             'users_id' => User::inRandomOrder()->first()->id,
             'articleSlug' => Article::inRandomOrder()->first()->slug,
+            'article_id' => Article::inRandomOrder()->first()->id,
             'body' => $this->faker->paragraph,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
+
 }

@@ -46,7 +46,7 @@ class Article extends Model
     }
 
     public function comment(){
-        return $this->hasMany(Comment::class, 'articleSlug','slug');
+        return $this->hasMany(Comment::class, 'article_id','id');
     }
 
     public function tags():BelongsToMany

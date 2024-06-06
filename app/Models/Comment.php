@@ -12,12 +12,13 @@ class Comment extends Model
 
     protected $fillable = [
         "users_id",
+        "article_id",
         "articleSlug",
         "body",
     ];
 
     public function article(){
-        return $this->belongsTo(Article::class);
+        return $this->belongsTo(Article::class,'article_id');
     }
 
     public function author()

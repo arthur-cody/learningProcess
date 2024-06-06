@@ -77,71 +77,79 @@ class ArticleCommentTest extends TestCase
 
     public function test_guest_can_get_comments_from_article()
     {
-        Article::factory()->count(5)->create();
+        $article = Article::factory()->createOne();
         $comments = Comment::factory()->count(5)->create();
         $comment = $comments->first();
+        $comment->article_id = $article->id;
+        $comment->save();
+
         $this->getJson('/api/articles/'.$comment->articleSlug.'/comments')
         ->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
             'body' => $comment->body,
+            'article_id' => $article->id,
             'articleSlug' => $comment->articleSlug,
         ]);
     }
 
     public function test_user_can_get_comments_from_article()
     {
-        Article::factory()->count(5)->create();
-        $comments = Comment::factory()->count(5)->create();
-        $comment = $comments->first();
-        $this->actingAs($this->user)->getJson('/api/articles/'.$comment->articleSlug.'/comments')
+        $article = Article::factory()->createOne();
+        $comments = Comment::factory()->createOne();
+        $comments->article_id = $article->id;
+        $comments->save();
+        $this->actingAs($this->user)->getJson('/api/articles/'.$comments->articleSlug.'/comments')
         ->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
-            'body' => $comment->body,
-            'users_id' => $this->user->id,
-            'articleSlug' => $comment->articleSlug,
+            'body' => $comments->body,
+            'article_id' => $article->id,
+            'articleSlug' => $comments->articleSlug,
         ]);
     }
 
     public function test_guest_cannot_delete_comment_from_article(){
 
-        Article::factory()->count(5)->create();
-        $comments = Comment::factory()->count(5)->create();
+        $article = Article::factory()->createOne();
+        $comments = Comment::factory()->createOne();
+        $comments->article_id = $article->id;
+        $comments->save();
 
-        $comment = $comments->first();
-
-        $response = $this->deleteJson('/api/articles/' . $comment->articleSlug)
+        $response = $this->deleteJson('/api/articles/' . $comments->articleSlug.'/comments/'.$comments->id)
             ->assertStatus(401);
         $this->assertEquals('Unauthenticated.', $response['message']);
     }
 
     public function test_user_can_delete_his_own_comment()
     {
-        Article::factory()->count(5)->create();
-        $comments = Comment::factory()->count(5)->create();
-
-        $comment = $comments->first();
+        $article = Article::factory()->createOne();
+        $comments = Comment::factory()->createOne();
+        $comments->article_id = $article->id;
+        $comments->users_id = $this->user->id;
+        $comments->save();
 
         $this->actingAs($this->user)
-            ->deleteJson('/api/articles/' . $comment->articleSlug)
+            ->deleteJson('/api/articles/' . $comments->articleSlug.'/comments/'.$comments->id)
             ->assertStatus(200);
     }
 
     public function test_user_cannot_delete_other_user_comment(){
 
-        Article::factory()->count(5)->create();
-        $comments = Comment::factory()->count(5)->create();
+        $nonAuthor = User::factory()->create();
+        $article = Article::factory()->createOne();
+        $comments = Comment::factory()->createOne();
+        $comments->article_id = $article->id;
+        $comments->users_id = $this->user->id;
+        $comments->save();
 
         $nonAuthor = User::factory()->create();
 
         $this->actingAs($nonAuthor);
     
-        $comment = $comments->first();
+        $response = $this->deleteJson('/api/articles/' . $comments->articleSlug.'/comments/'.$comments->id);
 
-        $response = $this->deleteJson('/api/articles/' . $comment->articleSlug);
-
-        $response->assertStatus(401);
+        $response->assertStatus(404);
 
     }
 }

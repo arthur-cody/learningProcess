@@ -22,6 +22,7 @@ class CommentService extends ServiceProvider
     {
         return Comment::create([
             'users_id' => Auth::user()->id,
+            'article_id' => $data['article']['id'],
             'articleSlug' => $data['article']['slug'],
             'body' => $data['comment']['body'],
         ]);
@@ -34,7 +35,7 @@ class CommentService extends ServiceProvider
 
     public function deleteComment(Article $article, $commentId) 
     {
-        $deleted = Comment::where('article_slug', $article->slug)
+        $deleted = Comment::where('article_id', $article->id)
         ->where('id', $commentId)
         ->where('users_id', Auth::user()->id)
         ->delete();

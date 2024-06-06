@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('articleSlug');
             $table->integer('users_id');
+            $table->integer('article_id');
             $table->text('body');
             $table->timestamps();
             $table->softDeletes();

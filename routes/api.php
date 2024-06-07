@@ -23,6 +23,10 @@ Route::prefix('articles')->group(function () {
     });
 });
 
+Route::prefix('profiles')->group(function(){
+    Route::get('/{username}', [UserController::class, 'show']);
+});
+
 Route::prefix('api')->middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/tags', [TagsController::class,'index']);
@@ -57,7 +61,7 @@ Route::prefix('api')->middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::prefix('profiles')->group(function(){
-        Route::get('/{username}', [UserController::class, 'show']);
+        // Route::get('/{username}', [UserController::class, 'show']);
         Route::post('/{username}/follow', [FollowerController::class, 'store']);
         Route::delete('/{username}/follow', [FollowerController::class, 'destroy']);
     });

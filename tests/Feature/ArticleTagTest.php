@@ -26,11 +26,18 @@ class ArticleTagTest extends TestCase
 
     }
 
-    public function test_get_article_tag()
+    public function test_user_can_get_tags()
     {
         ArticleFactory::new()->hasTags();
         $this->actingAs($this->user)
              ->getJson('/api/tags')
              ->assertStatus(200);
+    }
+
+    public function test_guest_cannot_get_tags()
+    {
+        $response = $this->getJson('/api/tags')
+             ->assertStatus(401);
+        $this->assertEquals('Unauthenticated.', $response['message']);
     }
 }

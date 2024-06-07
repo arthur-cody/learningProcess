@@ -50,7 +50,7 @@ class UserTest extends TestCase
     {
         $users = User::factory()->count(3)->create();
         $user = $users->first();
-        $this->actingAs($this->createUser())->getJson('/api/profiles/'. $user->name)
+        $this->getJson('/api/profiles/'. $user->name)
              ->assertStatus(200)
              ->assertJsonFragment([
                     "profile"=> [
@@ -81,6 +81,22 @@ class UserTest extends TestCase
             'user_id' => $follower->id,
             'followee_id' => $followee->id,
         ]);
+    }
+
+    public function test_guest_cannot_follow_and_unfollow_user()
+    {
+        $users = User::factory()->count(3)->create();
+        $followee = $users->first();
+
+        // Follow the user
+        $responseFollow = $this->postJson('/api/profiles/' . $followee->name . '/follow')
+            ->assertStatus(401);
+        $this->assertEquals('Unauthenticated.', $responseFollow['message']);
+
+        // Unfollow the user
+        $responseUnfollow = $this->deleteJson('/api/profiles/' . $followee->name . '/follow')
+            ->assertStatus(401);
+        $this->assertEquals('Unauthenticated.', $responseUnfollow['message']);
     }
 
     public function test_user_can_follow_and_unfollow_another_user()
@@ -125,4 +141,94 @@ class UserTest extends TestCase
             'followee_id' => $followee->id,
         ]);
     }
+
+    public function test_guest_can_get_current_user()
+    {
+        $users = User::factory()->count(3)->create();
+        $user = $users->first();
+        $this->getJson('/api/profiles/'. $user->name)
+                        ->assertStatus(200)
+                        ->assertJsonFragment([
+                            "profile"=> [
+                                "username" => $user->name,
+                                "bio" => $user->bio,
+                                "image" => $user->image,
+                                "following" => false
+                            ]
+                        ]);
+    }
+
+    public function test_user_cannot_follow_already_follow_user()
+    {
+        $users = User::factory()->count(3)->create();
+        $followee = $users->first();
+        $follower = $this->createUser();
+
+        // First follow action
+        $this->actingAs($follower)->postJson('/api/profiles/' . $followee->name . '/follow')
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                "profile" => [
+                    "username" => $followee->name,
+                    "bio" => $followee->bio,
+                    "image" => $followee->image,
+                    "following" => true
+                ]
+            ]);
+
+        // Attempt to follow the same user again
+        $this->actingAs($follower)->postJson('/api/profiles/' . $followee->name . '/follow')
+            ->assertStatus(201) // or appropriate status code
+            ->assertJsonFragment([
+                "message" => "You already follow this account!"
+            ]);
+
+        // Ensure only one follow relationship exists in the database
+        $this->assertDatabaseCount('followers', 1);
+    }
+
+    public function test_user_cannot_unfollow_already_unfollowed_user()
+    {
+        $users = User::factory()->count(3)->create();
+        $followee = $users->first();
+        $follower = $this->createUser();
+
+        // First follow action
+        $this->actingAs($follower)->postJson('/api/profiles/' . $followee->name . '/follow')
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                "profile" => [
+                    "username" => $followee->name,
+                    "bio" => $followee->bio,
+                    "image" => $followee->image,
+                    "following" => true
+                ]
+            ]);
+
+        // First unfollow action
+        $this->actingAs($follower)->deleteJson('/api/profiles/' . $followee->name . '/follow')
+            ->assertStatus(201)
+            ->assertJsonFragment([
+                "profile" => [
+                    "username" => $followee->name,
+                    "bio" => $followee->bio,
+                    "image" => $followee->image,
+                    "following" => false
+                ]
+            ]);
+
+        // Attempt to unfollow the same user again
+        $this->actingAs($follower)->deleteJson('/api/profiles/' . $followee->name . '/follow')
+            ->assertStatus(201) // or appropriate status code
+            ->assertJsonFragment([
+                "message" => "No credentials found!"
+            ]);
+
+        // Ensure no follow relationship exists in the database
+        $this->assertDatabaseMissing('followers', [
+            'user_id' => $follower->id,
+            'followee_id' => $followee->id,
+        ]);
+    }
+
 }

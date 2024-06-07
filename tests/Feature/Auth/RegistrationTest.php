@@ -14,10 +14,10 @@ class RegistrationTest extends TestCase
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
-    
+
         // Assert that the response status code is 500
         $response->assertStatus(500);
-    
+
         // Check if the user was not created in the database
         $this->assertDatabaseMissing('users', [
             'name' => 'Test User',

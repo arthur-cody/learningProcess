@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use Database\Factories\ArticleFactory;
-
-use App\Models\Article;
+use Illuminate\Database\Seeder;
 
 class ArticleSeeder extends Seeder
 {
@@ -17,6 +14,6 @@ class ArticleSeeder extends Seeder
     {
         //
         ArticleFactory::new()
-        ->hasTags()->count(10)->create();
+            ->hasTags()->count(10)->create();
     }
 }

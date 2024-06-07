@@ -14,10 +14,11 @@ class TagResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        
+
     }
 
-    public static function getArray($array){
+    public static function getArray($array)
+    {
         return array_flat($array);
     }
 }

@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-
     public function __construct(protected UserService $userService)
     {
         $this->userService = $userService;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -21,6 +21,7 @@ class UserController extends Controller
     {
         try {
             $users = $this->userService->getUserInfo();
+
             return response()->json([
                 'user' => UserResource::getUser($users),
             ]);
@@ -28,7 +29,7 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Unable to fetch data', 'message' => $e->getMessage()], 500);
         }
-        
+
     }
 
     /**
@@ -46,8 +47,9 @@ class UserController extends Controller
     {
         try {
             $profile = $this->userService->getUserProfile($username);
+
             return response()->json([
-                'profile' => new UserResource($profile)
+                'profile' => new UserResource($profile),
             ]);
 
         } catch (\Exception $e) {
@@ -63,6 +65,7 @@ class UserController extends Controller
 
         try {
             $updatedUserInfo = $this->userService->updateUserInfo($updateResource->validated());
+
             return response()->json([
                 'user' => UserResource::getUser($updatedUserInfo),
             ]);

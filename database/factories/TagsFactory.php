@@ -19,9 +19,10 @@ class TagsFactory extends Factory
     {
 
         $name = fake()->word();
+
         return [
             'name' => $name,
-            'slug' => Str::slug($name)
+            'slug' => Str::slug($name),
         ];
     }
 }

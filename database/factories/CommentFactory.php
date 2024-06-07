@@ -2,11 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Article;
 use App\Models\Comment;
-use App\Models\{
-    User,
-    Article
-};
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -37,5 +35,4 @@ class CommentFactory extends Factory
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
-
 }

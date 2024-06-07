@@ -8,11 +8,11 @@ use Illuminate\Support\ServiceProvider;
 
 class TagService extends ServiceProvider
 {
-
     public function __construct(Application $app)
     {
         parent::__construct($app);
     }
+
     /**
      * Register services.
      */

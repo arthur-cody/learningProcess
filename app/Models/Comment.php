@@ -11,14 +11,15 @@ class Comment extends Model
     use HasFactory,SoftDeletes;
 
     protected $fillable = [
-        "users_id",
-        "article_id",
-        "articleSlug",
-        "body",
+        'users_id',
+        'article_id',
+        'articleSlug',
+        'body',
     ];
 
-    public function article(){
-        return $this->belongsTo(Article::class,'article_id');
+    public function article()
+    {
+        return $this->belongsTo(Article::class, 'article_id');
     }
 
     public function author()

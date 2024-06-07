@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Article;
-use App\Models\ArticleTag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -36,10 +35,9 @@ class ArticleFactory extends Factory
 
     public function hasTags(): Factory|ArticleFactory
     {
-        return $this->afterCreating(function(Article $article){
+        return $this->afterCreating(function (Article $article) {
             $tag = TagsFactory::new()->createOne();
             $article->tags()->attach($tag->id);
         });
     }
-
 }

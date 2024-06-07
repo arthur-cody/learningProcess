@@ -7,7 +7,6 @@ use App\Models\Tags;
 use App\Models\User;
 use Database\Factories\ArticleFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Carbon\Carbon;
 use Tests\TestCase;
 
 class ArticleTest extends TestCase
@@ -27,37 +26,38 @@ class ArticleTest extends TestCase
 
     }
 
-
-    public function test_user_can_create_article(){
+    public function test_user_can_create_article()
+    {
         $data = [
-            "article" => [
-                "title" => "How to train your dragons",
-                "description" => "Ever wonder how?",
-                "body" => "You have to believe",
-                "tagList" => ["reactjs", "angularjs", "dragons"]
-            ]
+            'article' => [
+                'title' => 'How to train your dragons',
+                'description' => 'Ever wonder how?',
+                'body' => 'You have to believe',
+                'tagList' => ['reactjs', 'angularjs', 'dragons'],
+            ],
         ];
         $this->actingAs($this->user);
 
         $this->assertAuthenticated();
 
-        $response = $this->post('/api/articles/',$data);
+        $response = $this->post('/api/articles/', $data);
 
-        $this->assertDatabaseHas('articles',[
-            "title" => $data['article']['title'],
+        $this->assertDatabaseHas('articles', [
+            'title' => $data['article']['title'],
         ]);
 
         $response->assertStatus(200);
-        
+
     }
 
-    public function test_user_cannot_create_article_without_required_fields(){
+    public function test_user_cannot_create_article_without_required_fields()
+    {
         $data = [
-            "article" => [
-                "description" => "Ever wonder how?",
-                "body" => "You have to believe",
-                "tagList" => ["reactjs", "angularjs", "dragons"]
-            ]
+            'article' => [
+                'description' => 'Ever wonder how?',
+                'body' => 'You have to believe',
+                'tagList' => ['reactjs', 'angularjs', 'dragons'],
+            ],
         ];
 
         $this->actingAs($this->user);
@@ -74,14 +74,14 @@ class ArticleTest extends TestCase
 
     public function test_user_cannot_get_non_existing_article()
     {
-        
+
         $nonExistingSlug = 'non-existing-slug';
 
         $this->actingAs($this->user);
 
         $this->assertAuthenticated();
 
-        $response = $this->postJson('/api/articles/' . $nonExistingSlug);
+        $response = $this->postJson('/api/articles/'.$nonExistingSlug);
 
         $response->assertStatus(404);
     }
@@ -97,33 +97,36 @@ class ArticleTest extends TestCase
         $this->assertAuthenticated();
     }
 
-    public function test_get_article_by_slug(){
-        
+    public function test_get_article_by_slug()
+    {
+
         // $this->actingAs($this->createUser());
         $article = ArticleFactory::new()->create();
         $this->post("/api/articles/$article->slug")
             ->assertStatus(200);
     }
 
-    public function guest_cannot_create_article(){
+    public function guest_cannot_create_article()
+    {
         $data = [
-            "article" => [
-                "title" => "How to train your dragons",
-                "description" => "Ever wonder how?",
-                "body" => "You have to believe",
-                "tagList" => ["reactjs", "angularjs", "dragons"]
-            ]
+            'article' => [
+                'title' => 'How to train your dragons',
+                'description' => 'Ever wonder how?',
+                'body' => 'You have to believe',
+                'tagList' => ['reactjs', 'angularjs', 'dragons'],
+            ],
         ];
 
         $this->postJson('/api/artciles', $data)
-                    ->assertStatus(403)
-                    ->assertJsonStructure([
-                        "message"=>"Unauthenticated.",
-                    ]); 
+            ->assertStatus(403)
+            ->assertJsonStructure([
+                'message' => 'Unauthenticated.',
+            ]);
 
     }
 
-    public function test_guest_can_view_articles(){
+    public function test_guest_can_view_articles()
+    {
 
         $this->actingAs($this->user);
 
@@ -132,9 +135,9 @@ class ArticleTest extends TestCase
         $articles = ArticleFactory::new()->count(5)->create();
 
         $response = $this->get('/api/articles');
-        
+
         $response->assertStatus(200);
-        
+
         $response->assertJsonCount(5, 'articles');
 
         foreach ($articles as $article) {
@@ -180,10 +183,10 @@ class ArticleTest extends TestCase
                     $tags->random(rand(1, 3))->pluck('id')->toArray()
                 );
             });
-        
+
         $filterTag = $tags->first();
 
-        $response = $this->getJson('/api/articles?filterByTag=' . $filterTag->name);
+        $response = $this->getJson('/api/articles?filterByTag='.$filterTag->name);
 
         $response->assertStatus(200);
 
@@ -204,14 +207,15 @@ class ArticleTest extends TestCase
 
         $this->actingAs($this->user);
 
-        $response = $this->getJson('/api/articles?filterByAuthor=' . $filterAuthorId);
+        $response = $this->getJson('/api/articles?filterByAuthor='.$filterAuthorId);
 
         $response->assertStatus(200);
 
     }
 
-    public function test_user_can_view_articles_favorited_by_user(){
-        
+    public function test_user_can_view_articles_favorited_by_user()
+    {
+
         $user = $this->user;
 
         $articles = ArticleFactory::new()->count(5)->create();
@@ -235,9 +239,9 @@ class ArticleTest extends TestCase
         Article::factory()->count(45)->create();
 
         $response = $this->getJson('/api/articles?limit=30');
-  
+
         $response->assertStatus(200);
-          
+
         $this->assertCount(30, $response->json('articles'));
 
         $this->assertAuthenticated();
@@ -251,9 +255,9 @@ class ArticleTest extends TestCase
         Article::factory()->count(45)->create();
 
         $response = $this->getJson('/api/articles?limit=30&offset=30');
-  
+
         $response->assertStatus(200);
-          
+
         $this->assertCount(15, $response->json('articles'));
 
         $this->assertAuthenticated();
@@ -263,11 +267,11 @@ class ArticleTest extends TestCase
     {
         $article = Article::factory()->createOne();
         $data = [
-                "article" => [
-                  "title"=> "Did you train your dragon2?"
-                ]
-            ];
-       $response = $this->putJson('/api/articles/'.$article->slug, $data)
+            'article' => [
+                'title' => 'Did you train your dragon2?',
+            ],
+        ];
+        $response = $this->putJson('/api/articles/'.$article->slug, $data)
             ->assertStatus(401);
         $this->assertEquals('Unauthenticated.', $response['message']);
     }
@@ -283,45 +287,45 @@ class ArticleTest extends TestCase
         $article->save();
 
         $data = [
-            "article" => [
-                "title" => "Did you train your dragon2?"
-            ]
+            'article' => [
+                'title' => 'Did you train your dragon2?',
+            ],
         ];
 
-        $response = $this->putJson('/api/articles/' . $article->slug, $data);
+        $response = $this->putJson('/api/articles/'.$article->slug, $data);
 
         $response->assertStatus(200);
 
         $response->assertJson([
-            "article" => [
-                "title" => "Did you train your dragon2?"
-            ]
+            'article' => [
+                'title' => 'Did you train your dragon2?',
+            ],
         ]);
 
         $this->assertDatabaseHas('articles', [
             'id' => $article->id,
             'users_id' => $this->user->id,
-            'title' => 'Did you train your dragon2?'
+            'title' => 'Did you train your dragon2?',
         ]);
     }
 
     public function test_user_cannot_update_article_of_other_authors()
     {
         $articles = Article::factory()->count(5)->create();
-    
+
         $nonAuthor = User::factory()->create();
         $this->actingAs($nonAuthor);
-    
+
         $article = $articles->first();
-    
+
         $data = [
-            "article" => [
-                "title" => "Did you train your dragon2?"
-            ]
+            'article' => [
+                'title' => 'Did you train your dragon2?',
+            ],
         ];
-    
-        $response = $this->putJson('/api/articles/' . $article->slug, $data);
-    
+
+        $response = $this->putJson('/api/articles/'.$article->slug, $data);
+
         $response->assertStatus(401);
     }
 
@@ -331,7 +335,7 @@ class ArticleTest extends TestCase
 
         $article = $articles->first();
 
-        $response = $this->deleteJson('/api/articles/' . $article->slug);
+        $response = $this->deleteJson('/api/articles/'.$article->slug);
 
         $response->assertStatus(401);
         $this->assertEquals('Unauthenticated.', $response['message']);
@@ -348,7 +352,7 @@ class ArticleTest extends TestCase
         $article->users_id = $user->id;
         $article->save();
 
-        $response = $this->deleteJson('/api/articles/' . $article->slug);
+        $response = $this->deleteJson('/api/articles/'.$article->slug);
 
         $response->assertStatus(200);
 
@@ -365,10 +369,10 @@ class ArticleTest extends TestCase
         $nonAuthor = User::factory()->create();
 
         $this->actingAs($nonAuthor);
-    
+
         $article = $articles->first();
 
-        $response = $this->deleteJson('/api/articles/' . $article->slug);
+        $response = $this->deleteJson('/api/articles/'.$article->slug);
 
         $response->assertStatus(401);
 
@@ -378,11 +382,11 @@ class ArticleTest extends TestCase
     {
         $article = Article::factory()->createOne();
         $data = [
-                "comment" => [
-                  "body"=> "Comment body for this article"
-                ]
-            ];
-       $response = $this->postJson('/api/articles/'.$article->slug.'/comments', $data)
+            'comment' => [
+                'body' => 'Comment body for this article',
+            ],
+        ];
+        $response = $this->postJson('/api/articles/'.$article->slug.'/comments', $data)
             ->assertStatus(401);
         $this->assertEquals('Unauthenticated.', $response['message']);
     }
@@ -392,14 +396,14 @@ class ArticleTest extends TestCase
         $articles = Article::factory()->count(5)->create();
         $article = $articles->first();
         $data = [
-            "comment" => [
-              "body"=> "Comment body for this article"
-            ]
+            'comment' => [
+                'body' => 'Comment body for this article',
+            ],
         ];
-        
+
         $this->actingAs($this->user)
-                ->postJson('/api/articles/'.$article->slug.'/comments', $data)
-                ->assertStatus(200);
+            ->postJson('/api/articles/'.$article->slug.'/comments', $data)
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
             'body' => 'Comment body for this article',
@@ -408,5 +412,4 @@ class ArticleTest extends TestCase
         ]);
 
     }
-
 }

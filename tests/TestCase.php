@@ -2,9 +2,9 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -13,9 +13,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Create and return a new user.
-     *
-     * @param  array  $attributes
-     * @return \App\Models\User
      */
     protected function createUser(array $attributes = []): User
     {

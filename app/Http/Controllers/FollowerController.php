@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFollowerRequest;
-use App\Http\Requests\UpdateFollowerRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Providers\FollowerService;
 
 class FollowerController extends Controller
 {
-
     public function __construct(protected FollowerService $followerService)
     {
         $this->followerService = $followerService;
@@ -23,19 +21,19 @@ class FollowerController extends Controller
             $validatedData = $request->validated();
             $user = auth()->user();
             $followee = User::findOrFail($validatedData['followee_id']);
-    
+
             if ($user->id === $followee->id) {
                 return response()->json(['message' => 'You cannot follow yourself'], 400);
             }
-    
+
             $followCreated = $this->followerService->createFollower($followee);
-            if($followCreated != null){
+            if ($followCreated != null) {
                 return response()->json([
-                    'profile' => new UserResource($followCreated)
+                    'profile' => new UserResource($followCreated),
                 ], 201);
-            }else{
+            } else {
                 return response()->json([
-                    'message' => "You already follow this account!"
+                    'message' => 'You already follow this account!',
                 ], 201);
             }
         } catch (\Exception $e) {
@@ -56,15 +54,15 @@ class FollowerController extends Controller
             if ($user->id === $followee->id) {
                 return response()->json(['message' => 'You cannot unfollow yourself'], 400);
             }
-    
+
             $followCreated = $this->followerService->unfollowUser($followee);
-            if($followCreated != null){
+            if ($followCreated != null) {
                 return response()->json([
-                    'profile' => new UserResource($followCreated)
+                    'profile' => new UserResource($followCreated),
                 ], 201);
-            }else{
+            } else {
                 return response()->json([
-                    'message' => "No credentials found!"
+                    'message' => 'No credentials found!',
                 ], 201);
             }
         } catch (\Exception $e) {

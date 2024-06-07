@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('array_flatten')) {
+if (! function_exists('array_flatten')) {
     /**
      * Flatten an array of arrays containing strings into a single-dimensional array.
      *
@@ -27,16 +27,16 @@ if (!function_exists('array_flatten')) {
     }
 }
 
+if (! function_exists('array_flat')) {
 
-if(!function_exists('array_flat')){
-
-    function array_flat($array){
+    function array_flat($array)
+    {
         $tagList = [];
-    
+
         $array->each(function ($tag) use (&$tagList) {
             $tagList[] = $tag->name;
         });
-    
+
         return $tagList;
     }
 }

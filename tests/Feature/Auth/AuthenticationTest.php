@@ -3,7 +3,6 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -18,7 +17,7 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated()
-           ->assertNotEmpty($response['token']);
+            ->assertNotEmpty($response['token']);
         $response->assertStatus(200);
     }
 

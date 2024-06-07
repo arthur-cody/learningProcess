@@ -8,23 +8,24 @@ use Illuminate\Http\Request;
 
 class TagsController extends Controller
 {
-
     protected $tagService;
 
     public function __construct(TagService $tagService)
     {
         $this->tagService = $tagService;
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-         $tags = $this->tagService->getTags();
-         return response()->json([
+        $tags = $this->tagService->getTags();
+
+        return response()->json([
             'tags' => TagResource::getArray($tags),
         ], 200);
-        
+
     }
 
     /**

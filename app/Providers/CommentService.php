@@ -2,17 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\{
-    Comment,
-    Article
-};
-use Illuminate\Support\ServiceProvider;
+use App\Models\Article;
+use App\Models\Comment;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\ServiceProvider;
 
 class CommentService extends ServiceProvider
 {
-
     public function __construct(Application $app)
     {
         parent::__construct($app);
@@ -33,22 +30,23 @@ class CommentService extends ServiceProvider
         return $article->comment()->get();
     }
 
-    public function deleteComment(Article $article, $commentId) 
+    public function deleteComment(Article $article, $commentId)
     {
         $deleted = Comment::where('article_id', $article->id)
-        ->where('id', $commentId)
-        ->where('users_id', Auth::user()->id)
-        ->delete();
+            ->where('id', $commentId)
+            ->where('users_id', Auth::user()->id)
+            ->delete();
 
         if ($deleted) {
             return response()->json(['message' => 'Comment deleted successfully.'], 200);
         } else {
             return response()->json(['error' => 'Something wrong'], 404);
         }
-         $article->delete();
+        $article->delete();
     }
 
-    public function getCommentFromArtcle(string $slug){
+    public function getCommentFromArtcle(string $slug)
+    {
 
     }
 

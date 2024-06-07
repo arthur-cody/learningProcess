@@ -14,10 +14,10 @@ class Tags extends Model
 
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
     ];
 
-    public function articles():BelongsToMany
+    public function articles(): BelongsToMany
     {
         return $this->belongsToMany(Article::class, 'article_tags', 'tag_id', 'article_id');
     }

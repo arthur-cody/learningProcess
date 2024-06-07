@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreArticleFavoriteRequest;
-use App\Http\Resources\ArticleFavoriteResource;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use App\Providers\ArticleFavoriteService;
@@ -11,7 +9,6 @@ use Illuminate\Http\Request;
 
 class ArticleFavoriteController extends Controller
 {
-
     protected $articleFavoriteService;
 
     public function __construct(ArticleFavoriteService $articleFavoriteService)
@@ -24,7 +21,7 @@ class ArticleFavoriteController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -35,18 +32,19 @@ class ArticleFavoriteController extends Controller
         try {
             $favoriteCreated = $this->articleFavoriteService->createFavorite($article);
 
-            if($favoriteCreated != null){
+            if ($favoriteCreated != null) {
                 return response()->json([
-                    'articles' => ArticleResource::collection($favoriteCreated)
+                    'articles' => ArticleResource::collection($favoriteCreated),
                 ], 201);
-            }else{
+            } else {
                 return response()->json([
-                    'message' => "You already follow this account!"
+                    'message' => 'You already follow this account!',
                 ], 201);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Unable to process request', 'message' => $e->getMessage()], 500);
         }
+
         return $article;
     }
 
@@ -75,13 +73,13 @@ class ArticleFavoriteController extends Controller
 
             $unFavorite = $this->articleFavoriteService->unFavorite($article);
 
-            if($unFavorite != null){
+            if ($unFavorite != null) {
                 return response()->json([
-                    'articles' => ArticleResource::collection($unFavorite)
+                    'articles' => ArticleResource::collection($unFavorite),
                 ], 201);
-            }else{
+            } else {
                 return response()->json([
-                    'message' => "No credentials found!"
+                    'message' => 'No credentials found!',
                 ], 201);
             }
         } catch (\Exception $e) {

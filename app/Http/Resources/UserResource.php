@@ -11,8 +11,8 @@ class UserResource extends JsonResource
         return [
             'username' => $this->name,
             'bio' => $this->bio,
-            "image" => $this->image,
-            'following' => $this->isFollowedByAuthUser()
+            'image' => $this->image,
+            'following' => $this->isFollowedByAuthUser(),
         ];
     }
 
@@ -21,9 +21,9 @@ class UserResource extends JsonResource
         return [
             'email' => $request->email,
             'bio' => $request->bio,
-            "username" => $request->name,
-            "token" => $request->token,
-            "image" => $request->image ? $request->image : null
+            'username' => $request->name,
+            'token' => $request->token,
+            'image' => $request->image ? $request->image : null,
         ];
     }
 }

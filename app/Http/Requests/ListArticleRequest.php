@@ -27,7 +27,7 @@ class ListArticleRequest extends FormRequest
             'filterByAuthor',
             'favoritedByUser',
             'limit',
-            'offset'
+            'offset',
         ];
     }
 }

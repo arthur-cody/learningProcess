@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 
 class Article extends Model
 {
@@ -18,17 +17,17 @@ class Article extends Model
      *
      * @var array
      */
-        // protected $table = 'article';
+    // protected $table = 'article';
     protected $fillable = [
-        "title",
-        "users_id",
-        "slug",
-        "description",
-        "body",
+        'title',
+        'users_id',
+        'slug',
+        'description',
+        'body',
     ];
 
     protected $cast = [
-        'favorited' => 'bool'
+        'favorited' => 'bool',
     ];
 
     /**
@@ -45,11 +44,12 @@ class Article extends Model
         return 'slug';
     }
 
-    public function comment(){
-        return $this->hasMany(Comment::class, 'article_id','id');
+    public function comment()
+    {
+        return $this->hasMany(Comment::class, 'article_id', 'id');
     }
 
-    public function tags():BelongsToMany
+    public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tags::class, 'article_tags', 'article_id', 'tag_id');
     }
@@ -59,9 +59,8 @@ class Article extends Model
         return $this->belongsToMany(User::class, 'article_favorite', 'article_id', 'user_id');
     }
 
-    public function favorites():BelongsToMany
+    public function favorites(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'article_favorite', 'article_id');
     }
-
 }

@@ -3,17 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Carbon\Carbon;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'bio',
-        'image', 
+        'image',
     ];
 
     /**
@@ -48,11 +48,11 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'following' => 'bool'
+            'following' => 'bool',
         ];
     }
 
-    public function article():HasMany
+    public function article(): HasMany
     {
         return $this->hasMany(Article::class);
     }
@@ -79,16 +79,13 @@ class User extends Authenticatable
 
     /**
      * Follow a user.
-     *
-     * @param  User  $user
-     * @return bool
      */
     public function follow(User $user): bool
     {
-        if (!$this->isFollowing($user)) {
+        if (! $this->isFollowing($user)) {
             $this->following()->attach($user->id, [
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
             ]);
 
             // Check if the relationship was successfully created
@@ -100,9 +97,6 @@ class User extends Authenticatable
 
     /**
      * Unfollow a user.
-     *
-     * @param  User  $user
-     * @return bool
      */
     public function unfollow(User $user): bool
     {
@@ -110,7 +104,7 @@ class User extends Authenticatable
             $this->following()->detach($user->id);
 
             // Check if the relationship was successfully deleted
-            return !$this->isFollowing($user);
+            return ! $this->isFollowing($user);
         }
 
         return false;
@@ -118,9 +112,6 @@ class User extends Authenticatable
 
     /**
      * Check if the user is following another user.
-     *
-     * @param  User  $user
-     * @return bool
      */
     public function isFollowing(User $user): bool
     {
@@ -129,12 +120,11 @@ class User extends Authenticatable
 
     /**
      * Check if this user is being followed by the authenticated user.
-     *
-     * @return bool
      */
     public function isFollowedByAuthUser(): bool
     {
         $authUser = auth()->user();
+
         return $authUser ? $authUser->following()->where('followee_id', $this->id)->exists() : false;
     }
 }

@@ -2,11 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\Article;
 use App\Models\User;
 use Database\Factories\ArticleFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ArticleTagTest extends TestCase
@@ -30,14 +28,14 @@ class ArticleTagTest extends TestCase
     {
         ArticleFactory::new()->hasTags();
         $this->actingAs($this->user)
-             ->getJson('/api/tags')
-             ->assertStatus(200);
+            ->getJson('/api/tags')
+            ->assertStatus(200);
     }
 
     public function test_guest_cannot_get_tags()
     {
         $response = $this->getJson('/api/tags')
-             ->assertStatus(401);
+            ->assertStatus(401);
         $this->assertEquals('Unauthenticated.', $response['message']);
     }
 }

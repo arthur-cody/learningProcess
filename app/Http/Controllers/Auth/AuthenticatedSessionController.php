@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
@@ -17,7 +17,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): JsonResponse
     {
-        try{
+        try {
             $request->authenticate();
 
             $request->session()->regenerate();
@@ -28,12 +28,12 @@ class AuthenticatedSessionController extends Controller
             return response()->json([
                 'message' => 'Logged in successfully',
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Unauthorized',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], $e->status);
         }
     }

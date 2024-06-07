@@ -29,11 +29,11 @@ class ArticleCommentTest extends TestCase
     {
         $article = Article::factory()->createOne();
         $data = [
-                "comment" => [
-                  "body"=> "Comment body for this article"
-                ]
-            ];
-       $response = $this->postJson('/api/articles/'.$article->slug.'/comments', $data)
+            'comment' => [
+                'body' => 'Comment body for this article',
+            ],
+        ];
+        $response = $this->postJson('/api/articles/'.$article->slug.'/comments', $data)
             ->assertStatus(401);
         $this->assertEquals('Unauthenticated.', $response['message']);
     }
@@ -43,14 +43,14 @@ class ArticleCommentTest extends TestCase
         $articles = Article::factory()->count(5)->create();
         $article = $articles->first();
         $data = [
-            "comment" => [
-              "body"=> "Comment body for this article"
-            ]
+            'comment' => [
+                'body' => 'Comment body for this article',
+            ],
         ];
-        
+
         $this->actingAs($this->user)
-                ->postJson('/api/articles/'.$article->slug.'/comments', $data)
-                ->assertStatus(200);
+            ->postJson('/api/articles/'.$article->slug.'/comments', $data)
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
             'body' => 'Comment body for this article',
@@ -65,14 +65,14 @@ class ArticleCommentTest extends TestCase
         $articles = Article::factory()->count(5)->create();
         $article = $articles->first();
         $data = [
-            "comment" => [
-              "body"=> ""
-            ]
+            'comment' => [
+                'body' => '',
+            ],
         ];
-        
+
         $this->actingAs($this->user)
-                ->postJson('/api/articles/'.$article->slug.'/comments', $data)
-                ->assertStatus(422);
+            ->postJson('/api/articles/'.$article->slug.'/comments', $data)
+            ->assertStatus(422);
     }
 
     public function test_guest_can_get_comments_from_article()
@@ -84,7 +84,7 @@ class ArticleCommentTest extends TestCase
         $comment->save();
 
         $this->getJson('/api/articles/'.$comment->articleSlug.'/comments')
-        ->assertStatus(200);
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
             'body' => $comment->body,
@@ -100,7 +100,7 @@ class ArticleCommentTest extends TestCase
         $comments->article_id = $article->id;
         $comments->save();
         $this->actingAs($this->user)->getJson('/api/articles/'.$comments->articleSlug.'/comments')
-        ->assertStatus(200);
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('comments', [
             'body' => $comments->body,
@@ -109,14 +109,15 @@ class ArticleCommentTest extends TestCase
         ]);
     }
 
-    public function test_guest_cannot_delete_comment_from_article(){
+    public function test_guest_cannot_delete_comment_from_article()
+    {
 
         $article = Article::factory()->createOne();
         $comments = Comment::factory()->createOne();
         $comments->article_id = $article->id;
         $comments->save();
 
-        $response = $this->deleteJson('/api/articles/' . $comments->articleSlug.'/comments/'.$comments->id)
+        $response = $this->deleteJson('/api/articles/'.$comments->articleSlug.'/comments/'.$comments->id)
             ->assertStatus(401);
         $this->assertEquals('Unauthenticated.', $response['message']);
     }
@@ -130,11 +131,12 @@ class ArticleCommentTest extends TestCase
         $comments->save();
 
         $this->actingAs($this->user)
-            ->deleteJson('/api/articles/' . $comments->articleSlug.'/comments/'.$comments->id)
+            ->deleteJson('/api/articles/'.$comments->articleSlug.'/comments/'.$comments->id)
             ->assertStatus(200);
     }
 
-    public function test_user_cannot_delete_other_user_comment(){
+    public function test_user_cannot_delete_other_user_comment()
+    {
 
         $nonAuthor = User::factory()->create();
         $article = Article::factory()->createOne();
@@ -146,8 +148,8 @@ class ArticleCommentTest extends TestCase
         $nonAuthor = User::factory()->create();
 
         $this->actingAs($nonAuthor);
-    
-        $response = $this->deleteJson('/api/articles/' . $comments->articleSlug.'/comments/'.$comments->id);
+
+        $response = $this->deleteJson('/api/articles/'.$comments->articleSlug.'/comments/'.$comments->id);
 
         $response->assertStatus(404);
 
